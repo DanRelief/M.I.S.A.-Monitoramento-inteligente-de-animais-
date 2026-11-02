@@ -94,7 +94,6 @@ class RepositorioProcedimentos:
         id_sessao: str,
     ) -> list[dict]:
 
-        # Atualizado para buscar de 'historico_procedimentos' unindo com os usuários corretos
         comando = """
                 SELECT
                     p.id,

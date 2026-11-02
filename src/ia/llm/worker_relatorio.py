@@ -42,6 +42,7 @@ class WorkerRelatorio(QObject):
     def executar(self) -> None:
 
         try:
+            print("[DEBUG IA] Iniciando a geração do relatório via IA...")
             relatorio = (
                 self.servico_relatorio.gerar(
                     id_sessao=(
@@ -52,12 +53,14 @@ class WorkerRelatorio(QObject):
                     ),
                 )
             )
+            print("[DEBUG IA] Relatório gerado com sucesso!")
 
             self.relatorio_gerado.emit(
                 relatorio
             )
 
         except Exception as erro:
+            print(f"[DEBUG IA ERRO] Falha capturada: {erro}")  # <--- Exibe o erro real no terminal
 
             self.erro.emit(
                 str(erro)

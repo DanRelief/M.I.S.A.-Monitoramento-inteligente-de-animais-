@@ -5,6 +5,8 @@ from pathlib import Path
 
 import bcrypt
 import mysql.connector
+import re
+
 from dotenv import load_dotenv
 
 
@@ -100,6 +102,10 @@ def autenticar_usuario(
     finally:
         _fechar_conexao(conexao, cursor)
 
+def validar_email(email: str) -> bool:
+    """Valida se a string possui um formato de e-mail válido."""
+    padrao = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+    return bool(re.match(padrao, email))
 
 def cadastrar_usuario(
     nome: str,
@@ -107,7 +113,33 @@ def cadastrar_usuario(
     identificador: str,
     senha_plana: str,
 ) -> tuple[bool, str]:
-    """Cadastra um usuário armazenando a senha com bcrypt."""
+    """Cadastra um usuário aplicando regras de validação por papel e armazenando a senha com bcrypt."""
+    
+    # 1. Validação do Nome
+    if not nome or len(nome.strip()) < 5:
+        return False, "O nome deve conter pelo menos 5 caracteres."
+    
+    # 2. Validação do Papel
+    if papel not in ["student", "teacher"]:
+        return False, "Papel de usuário inválido."
+
+    # 3. Validação do Identificador (E-mail obrigatório para docente; flexível para aluno)
+    if not identificador or len(identificador.strip()) < 5:
+        return False, "O identificador (RA ou E-mail) é inválido ou muito curto."
+    
+    # Regra específica para docentes: o e-mail é obrigatório e deve ser válido
+    if papel == "teacher":
+        if "@" not in identificador or not validar_email(identificador):
+            return False, "Para docentes, é obrigatório o preenchimento de um e-mail válido."
+    
+    # Se contiver '@' (geralmente aluno usando e-mail), valida se a estrutura está correta
+    elif "@" in identificador and not validar_email(identificador):
+        return False, "O formato do e-mail fornecido é inválido."
+
+    # 4. Validação da Senha
+    if not senha_plana or len(senha_plana) < 6:
+        return False, "A senha deve conter no mínimo 6 caracteres."
+    
     conexao = None
     cursor = None
 
@@ -133,7 +165,7 @@ def cadastrar_usuario(
 
         cursor.execute(
             query,
-            (nome, papel, identificador, senha_hash),
+            (nome.strip(), papel, identificador.strip(), senha_hash),
         )
         conexao.commit()
 
@@ -182,9 +214,6 @@ def listar_alunos() -> list[dict]:
         _fechar_conexao(conexao, cursor)
 
 
-# ============================================================================
-# ANIMAIS
-# ============================================================================
 
 
 def cadastrar_animal(dados: dict) -> tuple[bool, str]:

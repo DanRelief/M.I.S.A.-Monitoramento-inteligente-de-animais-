@@ -78,6 +78,7 @@ class ServicoRelatorio:
             raise
 
         except Exception as erro:
+            print(f"--- ERRO TÉCNICO DETALHADO DA IA: {repr(erro)} ---")
             raise ErroGeracaoRelatorio(
                 "Não foi possível gerar "
                 "o relatório por IA."

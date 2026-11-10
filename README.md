@@ -167,7 +167,7 @@ As interfaces foram desenvolvidas utilizando **Python e PySide6**, com apresenta
 Responsável pela autenticação dos usuários. O acesso é realizado por RA ou e-mail, conforme o perfil selecionado, juntamente com a senha cadastrada.
 
 <p align="center">
-  <img src="assets/screenshots/tela_login.png" alt="Tela de login" width="620">
+  <img src="assets/readme_misa/tela_login.png" alt="Tela de login" width="620">
 </p>
 
 <br>
@@ -177,7 +177,7 @@ Responsável pela autenticação dos usuários. O acesso é realizado por RA ou 
 Permite a criação de contas para alunos e docentes, registrando as informações de identificação, credenciais e tipo de acesso.
 
 <p align="center">
-  <img src="assets/screenshots/tela_cadastro.png" alt="Cadastro de usuários" width="620">
+  <img src="assets/readme_misa/tela_cadastro.png" alt="Cadastro de usuários" width="620">
 </p>
 
 <br>

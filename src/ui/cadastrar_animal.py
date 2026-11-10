@@ -41,7 +41,7 @@ class DialogCadastrarAnimal(QDialog):
         titulo.setStyleSheet(
             "font-size: 16px; "
             "font-weight: bold; "
-            "color: #1f4d3a;"
+            "color: #287a55;"
         )
 
         layout.addWidget(titulo)
@@ -301,13 +301,14 @@ class DialogCadastrarAnimal(QDialog):
         self.setStyleSheet(
             """
             QDialog {
-                background-color: #f7f9fc;
+                background-color: #ffffff;
             }
 
+            /* Cor dos rótulos (Aluno Responsável, Procedimento Inicial, Estado Clínico, etc.) */
             QLabel {
-                color: #2c3e50;
+                color: #287a55;
                 font-size: 13px;
-                font-weight: 500;
+                font-weight: bold;
             }
 
             QLineEdit,

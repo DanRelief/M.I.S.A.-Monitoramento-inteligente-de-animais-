@@ -1292,6 +1292,7 @@ class TelaInicial(QMainWindow):
 
         cor_destaque = "#287a55" if self.is_teacher else "#08b9df"
 
+        # 1. Informações do Paciente
         self.informacoes_paciente = QLabel()
         self.informacoes_paciente.setObjectName("informacoes_paciente")
         self.informacoes_paciente.setTextFormat(Qt.TextFormat.RichText)
@@ -1301,45 +1302,6 @@ class TelaInicial(QMainWindow):
         linha_informacoes = QHBoxLayout()
         linha_informacoes.setContentsMargins(0, 0, 0, 0)
         linha_informacoes.addWidget(self.informacoes_paciente, 1)
-
-        # Linha com os botões de Gestão (Cadastrar Animal / Remover Aluno / Monitorar)
-        linha_botoes_animais = QHBoxLayout()
-        linha_botoes_animais.addStretch()
-
-        # REGRA: Os botões de cadastro de animal e remoção de aluno são exclusivos do Docente
-        if self.is_teacher:
-            # Botão Cadastrar Animal
-            self.btn_cadastrar = QPushButton("Cadastrar Animal")
-            self.btn_cadastrar.setObjectName("btn_card_animal")
-            self.btn_cadastrar.clicked.connect(self._abrir_cadastro_animal)
-            linha_botoes_animais.addWidget(self.btn_cadastrar)
-
-            # Botão Remover Aluno (Vermelho / Destaque)
-            self.btn_remover_aluno = QPushButton("Remover Aluno")
-            self.btn_remover_aluno.setObjectName("btn_card_animal")
-            self.btn_remover_aluno.setStyleSheet("""
-                QPushButton {
-                    background-color: #d9534f;
-                    color: white;
-                    font-weight: bold;
-                    padding: 6px 12px;
-                    border-radius: 4px;
-                }
-                QPushButton:hover {
-                    background-color: #c9302c;
-                }
-            """)
-            self.btn_remover_aluno.clicked.connect(self._abrir_gerenciar_alunos)
-            linha_botoes_animais.addWidget(self.btn_remover_aluno)
-
-        # Botão Monitorar Animal (visível para todos)
-        self.btn_monitorar = QPushButton("Monitorar Animal")
-        self.btn_monitorar.setObjectName("btn_card_animal")
-        self.btn_monitorar.clicked.connect(self._abrir_selecao_animal)
-        linha_botoes_animais.addWidget(self.btn_monitorar)
-
-        linha_botoes_animais.addStretch()
-        layout.addLayout(linha_botoes_animais)
 
         self.btn_editar_paciente = QPushButton("Editar")
         self.btn_editar_paciente.setObjectName("botao_acao")
@@ -1351,6 +1313,7 @@ class TelaInicial(QMainWindow):
         )
         layout.addLayout(linha_informacoes)
 
+        # 2. Caixa de Observações do Docente
         label_obs = QLabel("<b>Observações do Docente:</b>")
         label_obs.setStyleSheet(
             f"color:{cor_destaque}; font-size:13px; margin-top:4px;"
@@ -1398,21 +1361,42 @@ class TelaInicial(QMainWindow):
                 alignment=Qt.AlignmentFlag.AlignRight,
             )
 
+        # 3. Seção AÇÕES DO ANIMAL
         self.cadastrar_label = QLabel("AÇÕES DO ANIMAL")
         self.cadastrar_label.setObjectName("titulo_cadastrar")
         self.cadastrar_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.cadastrar_label)
 
+        # LINHA ÚNICA: Botões de Gestão (Cadastrar Animal / Remover Aluno / Monitorar Animal)
         linha_botoes_animais = QHBoxLayout()
         linha_botoes_animais.addStretch()
 
-        self.btn_cadastrar = QPushButton("Cadastrar Animal")
-        self.btn_cadastrar.setObjectName("btn_card_animal")
-        self.btn_cadastrar.clicked.connect(self._abrir_cadastro_animal)
-        self.btn_cadastrar.setVisible(self.is_teacher)
         if self.is_teacher:
+            # Botão Cadastrar Animal
+            self.btn_cadastrar = QPushButton("Cadastrar Animal")
+            self.btn_cadastrar.setObjectName("btn_card_animal")
+            self.btn_cadastrar.clicked.connect(self._abrir_cadastro_animal)
             linha_botoes_animais.addWidget(self.btn_cadastrar)
 
+            # Botão Remover Aluno
+            self.btn_remover_aluno = QPushButton("Remover Aluno")
+            self.btn_remover_aluno.setObjectName("btn_card_animal")
+            self.btn_remover_aluno.setStyleSheet("""
+                QPushButton {
+                    background-color: #d9534f;
+                    color: white;
+                    font-weight: bold;
+                    padding: 6px 12px;
+                    border-radius: 4px;
+                }
+                QPushButton:hover {
+                    background-color: #c9302c;
+                }
+            """)
+            self.btn_remover_aluno.clicked.connect(self._abrir_gerenciar_alunos)
+            linha_botoes_animais.addWidget(self.btn_remover_aluno)
+
+        # Botão Monitorar Animal
         self.btn_monitorar = QPushButton("Monitorar Animal")
         self.btn_monitorar.setObjectName("btn_card_animal")
         self.btn_monitorar.clicked.connect(self._abrir_selecao_animal)
@@ -1421,6 +1405,7 @@ class TelaInicial(QMainWindow):
         linha_botoes_animais.addStretch()
         layout.addLayout(linha_botoes_animais)
 
+        # 4. Linha de Lançamentos Clínicos (Procedimento / Medicação)
         linha_cadastro_eventos = QHBoxLayout()
         self.btn_procedimento = QPushButton("Procedimento")
         self.btn_procedimento.setObjectName("btn_card_animal")
@@ -1438,7 +1423,7 @@ class TelaInicial(QMainWindow):
         linha_cadastro_eventos.addStretch()
         layout.addLayout(linha_cadastro_eventos)
 
-        # Controles do simulador mantidos da versão com IA.
+        # 5. Controles do Simulador (Fisiológicos)
         self.btn_simular_queda_spo2 = QPushButton("Queda SpO₂")
         self.btn_simular_queda_pam = QPushButton("Queda PAM")
         self.btn_simular_temperatura = QPushButton("Aumentar Temp.")

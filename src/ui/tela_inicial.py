@@ -281,7 +281,7 @@ class TelaInicial(QMainWindow):
         central: QWidget,
         usuario: dict[str, str],
     ) -> None:
-        """Cria o painel lateral com tema adequado ao perfil logado."""
+        """Cria o painel lateral com tema e logo adequados ao perfil logado."""
         self.menu_overlay = QFrame(central)
         self.menu_overlay.setObjectName("menu_overlay")
         self.menu_overlay.hide()
@@ -325,10 +325,36 @@ class TelaInicial(QMainWindow):
 
         layout.addStretch()
 
-        caminho_logo = Path(__file__).resolve().parents[2] / "assets" / "logo_misa.png"
+        # --- BUSCA DINÂMICA DA LOGO NO PAINEL LATERAL ---
+        diretorio_atual = Path(__file__).resolve().parent
+        pasta_assets = None
+        for pai in [diretorio_atual] + list(diretorio_atual.parents):
+            candidato = pai / "assets"
+            if candidato.is_dir():
+                pasta_assets = candidato
+                break
+
+        if pasta_assets is None:
+            pasta_assets = Path(__file__).resolve().parents[2] / "assets"
+
+        caminho_logo_menu = None
+        if self.is_teacher:
+            for nome_arquivo in (
+                "logo_misa_docente.png",
+                "logo_misa_docente.jpg",
+                "logo_misa_verde.png",
+            ):
+                candidato = pasta_assets / nome_arquivo
+                if candidato.exists():
+                    caminho_logo_menu = candidato
+                    break
+
+        if caminho_logo_menu is None or not caminho_logo_menu.exists():
+            caminho_logo_menu = pasta_assets / "logo_misa.png"
+
         logo_menu = QLabel()
-        if caminho_logo.exists():
-            imagem_logo = QPixmap(str(caminho_logo))
+        if caminho_logo_menu.exists():
+            imagem_logo = QPixmap(str(caminho_logo_menu))
             if not imagem_logo.isNull():
                 logo_menu.setPixmap(
                     imagem_logo.scaled(
@@ -341,6 +367,7 @@ class TelaInicial(QMainWindow):
         logo_menu.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(logo_menu)
 
+        # --- CONFIGURAÇÃO DAS CORES DE TEMA ---
         cor_tema = "#287a55" if self.is_teacher else "#08b9df"
         cor_hover = "#216746" if self.is_teacher else "#078eaa"
         cor_fechar = "#1f4d3a" if self.is_teacher else "#2100b8"

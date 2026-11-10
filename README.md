@@ -189,7 +189,7 @@ Apresenta os dados do paciente, gráficos de monitoramento, histórico clínico 
 O aluno possui acesso às funcionalidades de acompanhamento, registro de medicações e procedimentos e consulta de relatórios.
 
 <p align="center">
-  <img src="assets/screenshots/tela_inicial.png" alt="Tela inicial do aluno" width="650">
+  <img src="assets/readme_misa/tela_inicial.png" alt="Tela inicial do aluno" width="650">
 </p>
 
 <br>
@@ -199,7 +199,7 @@ O aluno possui acesso às funcionalidades de acompanhamento, registro de medica�
 Disponibiliza os recursos administrativos do sistema, permitindo cadastrar pacientes, iniciar o monitoramento, gerenciar a entrada de dados e registrar observações clínicas.
 
 <p align="center">
-  <img src="assets/screenshots/tela_inicial_professor.png" alt="Tela inicial do docente" width="650">
+  <img src="assets/readme_misa/tela_inicial_professor.png" alt="Tela inicial do docente" width="650">
 </p>
 
 <br>
@@ -211,7 +211,7 @@ Interface exclusiva do docente, utilizada para registrar pacientes veterinários
 Permite informar nome, espécie, idade, porte, aluno responsável, procedimento inicial, estado clínico e informações sobre medicações.
 
 <p align="center">
-  <img src="assets/screenshots/cadastrar_animal.png" alt="Cadastro de animais" width="350">
+  <img src="assets/readme_misa/cadastrar_animal.png" alt="Cadastro de animais" width="350">
 </p>
 
 <br>
@@ -221,7 +221,7 @@ Permite informar nome, espécie, idade, porte, aluno responsável, procedimento 
 Tela principal de acompanhamento clínico, reunindo informações do animal, indicadores de sinais vitais, gráficos de evolução temporal, histórico de procedimentos e painel de alertas.
 
 <p align="center">
-  <img src="assets/screenshots/monitoramento_animal.png" alt="Monitoramento do paciente" width="680">
+  <img src="assets/readme_misa/monitoramento_animal.png" alt="Monitoramento do paciente" width="680">
 </p>
 
 <br>
@@ -233,7 +233,7 @@ Permite registrar a medicação administrada, quantidade, unidade de medida, res
 Os registros ficam associados ao histórico do paciente.
 
 <p align="center">
-  <img src="assets/screenshots/cadastrar_medicacao.png" alt="Cadastro de medicação" width="500">
+  <img src="assets/readme_misa/cadastrar_medicacao.png" alt="Cadastro de medicação" width="500">
 </p>
 
 <br>
@@ -243,7 +243,7 @@ Os registros ficam associados ao histórico do paciente.
 Permite documentar procedimentos clínicos realizados durante o acompanhamento, incluindo responsável, data, horário e observações.
 
 <p align="center">
-  <img src="assets/screenshots/cadastrar_procedimento.png" alt="Cadastro de procedimento" width="500">
+  <img src="assets/readme_misa/cadastrar_procedimento.png" alt="Cadastro de procedimento" width="500">
 </p>
 
 <br>
@@ -259,7 +259,7 @@ O painel de alertas apresenta os resultados produzidos pelo mecanismo de anális
 Indica que os parâmetros analisados permanecem compatíveis com o comportamento recente, sem identificação de alterações persistentes.
 
 <p align="center">
-  <img src="assets/screenshots/monitoramento_animal_estavel.png" alt="Monitoramento estável" width="600">
+  <img src="assets/readme_misa/monitoramento_animal_estavel.png" alt="Monitoramento estável" width="600">
 </p>
 
 <br>
@@ -269,7 +269,7 @@ Indica que os parâmetros analisados permanecem compatíveis com o comportamento
 Exibido quando uma mudança é identificada, mas ainda não existem evidências temporais suficientes para confirmar um alerta.
 
 <p align="center">
-  <img src="assets/screenshots/monitoramento_animal_observacao.png" alt="Alteração em observação" width="600">
+  <img src="assets/readme_misa/monitoramento_animal_observacao.png" alt="Alteração em observação" width="600">
 </p>
 
 <br>
@@ -279,7 +279,7 @@ Exibido quando uma mudança é identificada, mas ainda não existem evidências 
 Apresentado quando uma alteração persistente é confirmada. O painel destaca o parâmetro afetado, sua medição atual e a referência recente.
 
 <p align="center">
-  <img src="assets/screenshots/monitoramento_animal_alerta.png" alt="Alerta ativo" width="600">
+  <img src="assets/readme_misa/monitoramento_animal_alerta.png" alt="Alerta ativo" width="600">
 </p>
 
 <br>
@@ -289,7 +289,7 @@ Apresentado quando uma alteração persistente é confirmada. O painel destaca o
 Indica que o parâmetro anteriormente alterado está retornando em direção à sua referência recente, permanecendo sob acompanhamento.
 
 <p align="center">
-  <img src="assets/screenshots/monitoramento_animal_recuperacao.png" alt="Sinal em recuperação" width="600">
+  <img src="assets/readme_misa/monitoramento_animal_recuperacao.png" alt="Sinal em recuperação" width="600">
 </p>
 
 <br>

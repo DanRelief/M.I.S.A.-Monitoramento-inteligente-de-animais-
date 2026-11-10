@@ -33,7 +33,7 @@ def get_db_connection():
         user=_obter_variavel_obrigatoria("DB_USER"),
         password=os.getenv("DB_PASSWORD", ""),
         database=_obter_variavel_obrigatoria("DB_NAME"),
-        port=int(_obter_variavel_obrigatoria("DB_PORT")),
+        port=int(_obter_variavel_obrigatoria("DB_PORT").strip()),
     )
 
 # --- USUÁRIOS E AUTENTICAÇÃO ---

@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\assets",
+    "\\dist",
+    "\\dist\\MISA",
+    "\\dist\\MISA\\_internal",
+    "\\dist\\MISA\\_internal\\assets",
+    "\\src",
+    "\\src\\infrastructure",
+    "\\src\\ui"
+  ],
+  "SelectedNode": "\\src\\ui\\tela_inicial.py",
+  "PreviewInSolutionExplorer": false
+}

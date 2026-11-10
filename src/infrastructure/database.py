@@ -820,3 +820,77 @@ def deletar_historico_medicacao(medicacao_id: int) -> bool:
 
     finally:
         _fechar_conexao(conexao, cursor)
+
+# ============================================================================
+# EXCLUSÃO DE ANIMAIS E ALUNOS (EXCLUSIVO PARA DOCENTES)
+# ============================================================================
+
+
+def deletar_animal(animal_id: int) -> tuple[bool, str]:
+    """Remove um animal do banco de dados (apenas se for chamado por perfil autorizado)."""
+    conexao = None
+    cursor = None
+
+    try:
+        conexao = get_db_connection()
+        cursor = conexao.cursor()
+
+        # Apaga o cadastro do animal (as chaves estrangeiras com CASCADE removerão histórico e medições vinculadas)
+        cursor.execute("DELETE FROM animais WHERE id = %s", (animal_id,))
+        conexao.commit()
+
+        if cursor.rowcount > 0:
+            return True, "Animal removido do sistema com sucesso!"
+        return False, "Animal não foi encontrado."
+
+    except mysql.connector.Error as erro:
+        if conexao is not None:
+            conexao.rollback()
+        return False, f"Erro ao deletar animal do banco: {erro}"
+
+    finally:
+        _fechar_conexao(conexao, cursor)
+
+
+def deletar_aluno(aluno_id: int) -> tuple[bool, str]:
+    """Remove um aluno do sistema, desde que ele não seja o responsável ativo por nenhum animal."""
+    conexao = None
+    cursor = None
+
+    try:
+        conexao = get_db_connection()
+        cursor = conexao.cursor()
+
+        # 1. Verifica se o usuário é realmente um aluno
+        cursor.execute(
+            "SELECT papel FROM usuarios WHERE id = %s", (aluno_id,)
+        )
+        usuario = cursor.fetchone()
+
+        if not usuario or usuario[0] != "student":
+            return False, "Operação permitida apenas para remoção de alunos."
+
+        # 2. Deleta o aluno (se houver vínculos sem ON DELETE CASCADE, tratar erro 1451)
+        cursor.execute("DELETE FROM usuarios WHERE id = %s", (aluno_id,))
+        conexao.commit()
+
+        if cursor.rowcount > 0:
+            return True, "Aluno removido do sistema com sucesso!"
+        return False, "Aluno não foi encontrado."
+
+    except mysql.connector.Error as erro:
+        if conexao is not None:
+            conexao.rollback()
+
+        # Trata o erro de chave estrangeira caso o aluno seja responsável por algum animal
+        if erro.errno == 1451:
+            return (
+                False,
+                "Não é possível remover este aluno pois ele possui animais atribuídos a ele. "
+                "Reatribua ou remova os animais primeiro.",
+            )
+
+        return False, f"Erro ao deletar aluno do banco: {erro}"
+
+    finally:
+        _fechar_conexao(conexao, cursor)

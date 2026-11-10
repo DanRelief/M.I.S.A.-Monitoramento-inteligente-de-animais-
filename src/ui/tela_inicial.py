@@ -51,6 +51,7 @@ from PySide6.QtCharts import (
 )
 
 from infrastructure.repositories.repositorio_sessoes import RepositorioSessoes
+from .dialogs.gerenciar_alunos_dialog import DialogGerenciarAlunos
 
 from ..application.monitoramento.controlador_monitoramento import ControladorMonitoramento
 from ..domain.measurement import ParametroVital
@@ -74,6 +75,11 @@ from src.infrastructure.database import (
 
 class TelaInicial(QMainWindow):
     logout_requested = Signal()
+
+    def _abrir_gerenciar_alunos(self) -> None:
+        """Abre a janela de gerenciamento e exclusão de alunos para o docente."""
+        dialog = DialogGerenciarAlunos(self)
+        dialog.exec()
 
     def __init__(self, usuario: dict[str, str]) -> None:
         super().__init__()
@@ -1296,6 +1302,45 @@ class TelaInicial(QMainWindow):
         linha_informacoes.setContentsMargins(0, 0, 0, 0)
         linha_informacoes.addWidget(self.informacoes_paciente, 1)
 
+        # Linha com os botões de Gestão (Cadastrar Animal / Remover Aluno / Monitorar)
+        linha_botoes_animais = QHBoxLayout()
+        linha_botoes_animais.addStretch()
+
+        # REGRA: Os botões de cadastro de animal e remoção de aluno são exclusivos do Docente
+        if self.is_teacher:
+            # Botão Cadastrar Animal
+            self.btn_cadastrar = QPushButton("Cadastrar Animal")
+            self.btn_cadastrar.setObjectName("btn_card_animal")
+            self.btn_cadastrar.clicked.connect(self._abrir_cadastro_animal)
+            linha_botoes_animais.addWidget(self.btn_cadastrar)
+
+            # Botão Remover Aluno (Vermelho / Destaque)
+            self.btn_remover_aluno = QPushButton("Remover Aluno")
+            self.btn_remover_aluno.setObjectName("btn_card_animal")
+            self.btn_remover_aluno.setStyleSheet("""
+                QPushButton {
+                    background-color: #d9534f;
+                    color: white;
+                    font-weight: bold;
+                    padding: 6px 12px;
+                    border-radius: 4px;
+                }
+                QPushButton:hover {
+                    background-color: #c9302c;
+                }
+            """)
+            self.btn_remover_aluno.clicked.connect(self._abrir_gerenciar_alunos)
+            linha_botoes_animais.addWidget(self.btn_remover_aluno)
+
+        # Botão Monitorar Animal (visível para todos)
+        self.btn_monitorar = QPushButton("Monitorar Animal")
+        self.btn_monitorar.setObjectName("btn_card_animal")
+        self.btn_monitorar.clicked.connect(self._abrir_selecao_animal)
+        linha_botoes_animais.addWidget(self.btn_monitorar)
+
+        linha_botoes_animais.addStretch()
+        layout.addLayout(linha_botoes_animais)
+
         self.btn_editar_paciente = QPushButton("Editar")
         self.btn_editar_paciente.setObjectName("botao_acao")
         self.btn_editar_paciente.hide()
@@ -1457,6 +1502,7 @@ class TelaInicial(QMainWindow):
                 "Erro",
                 "Não foi possível salvar a observação no banco de dados.",
             )
+
 
     def criar_card_monitoramento(self) -> QFrame:
         card = self.criar_card()

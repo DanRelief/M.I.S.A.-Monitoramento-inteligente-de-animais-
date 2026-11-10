@@ -1,6 +1,18 @@
 CREATE DATABASE IF NOT EXISTS misa;
 USE misa;
 
+-- 1. Remove a regra restritiva atual
+ALTER TABLE sessoes_monitoramento 
+DROP FOREIGN KEY fk_sessao_animal;
+
+-- 2. Recria a regra permitindo deleção em cascata
+ALTER TABLE sessoes_monitoramento 
+ADD CONSTRAINT fk_sessao_animal 
+FOREIGN KEY (animal_id) REFERENCES animais(id) 
+ON DELETE CASCADE 
+ON UPDATE CASCADE;
+
+
 -- 1. Tabela de Usuários (com flag de primeiro acesso e identificador único)
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,

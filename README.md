@@ -350,7 +350,7 @@ pip install -r requirements.txt
 
 Configurar a conexão com o MySQL e as variáveis de ambiente necessárias que devem ser configuradas como senha, host, user, do banco de dados, incluindo a chave de acesso à API do Gemini para utilização dos relatórios inteligentes. Um exemplo de como deve ser o .env, está um documento de nome .env_exemplo
 
-A inicialização da aplicação deve ser realizada pelo arquivo principal definido no código-fonte ou o via terminal via comando
+A inicialização da aplicação deve ser realizada pelo arquivo principal definido no código-fonte ou via terminal via comando
 
 ```bash
 python main.py

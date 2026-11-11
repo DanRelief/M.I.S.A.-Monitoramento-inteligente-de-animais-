@@ -345,6 +345,7 @@ python -m venv .venv
 ```bash
 pip install -r requirements.txt
 ```
+Para o python recomenda-se qualquer versão acima da 3.11 para instalação das libs e dependências.
 
 **5. Configurar o ambiente**
 
@@ -355,7 +356,11 @@ A inicialização da aplicação deve ser realizada pelo arquivo principal defin
 ```bash
 python main.py
 ```
+A criação do .exe pode ser feita via comando dentro do ambiente virtual e ficará disponível em dist/MISA:
 
+```bash
+python -m PyInstaller --noconfirm --onedir --windowed --add-data "assets;assets" --add-data ".env;." --icon="assets/icone.ico" --name "MISA" main.py
+```
 ---
 
 ## 10. Considerações Finais

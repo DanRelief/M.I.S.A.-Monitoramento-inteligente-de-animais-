@@ -36,7 +36,6 @@ def get_db_connection():
         port=int(_obter_variavel_obrigatoria("DB_PORT").strip()),
     )
 
-# --- USUÁRIOS E AUTENTICAÇÃO ---
 
 def _fechar_conexao(conexao, cursor) -> None:
     """Fecha cursor e conexão com segurança."""
@@ -45,11 +44,6 @@ def _fechar_conexao(conexao, cursor) -> None:
 
     if conexao is not None and conexao.is_connected():
         conexao.close()
-
-
-# ============================================================================
-# USUÁRIOS E AUTENTICAÇÃO
-# ============================================================================
 
 
 def autenticar_usuario(
@@ -115,28 +109,22 @@ def cadastrar_usuario(
 ) -> tuple[bool, str]:
     """Cadastra um usuário aplicando regras de validação por papel e armazenando a senha com bcrypt."""
     
-    # 1. Validação do Nome
     if not nome or len(nome.strip()) < 5:
         return False, "O nome deve conter pelo menos 5 caracteres."
     
-    # 2. Validação do Papel
     if papel not in ["student", "teacher"]:
         return False, "Papel de usuário inválido."
 
-    # 3. Validação do Identificador (E-mail obrigatório para docente; flexível para aluno)
     if not identificador or len(identificador.strip()) < 5:
         return False, "O identificador (RA ou E-mail) é inválido ou muito curto."
     
-    # Regra específica para docentes: o e-mail é obrigatório e deve ser válido
     if papel == "teacher":
         if "@" not in identificador or not validar_email(identificador):
             return False, "Para docentes, é obrigatório o preenchimento de um e-mail válido."
     
-    # Se contiver '@' (geralmente aluno usando e-mail), valida se a estrutura está correta
     elif "@" in identificador and not validar_email(identificador):
         return False, "O formato do e-mail fornecido é inválido."
 
-    # 4. Validação da Senha
     if not senha_plana or len(senha_plana) < 6:
         return False, "A senha deve conter no mínimo 6 caracteres."
     
@@ -505,9 +493,41 @@ def salvar_medicao_sinal_vital(
         _fechar_conexao(conexao, cursor)
 
 
-# ============================================================================
-# HISTÓRICO PERMANENTE DE PROCEDIMENTOS
-# ============================================================================
+def atualizar_animal(animal_id: int, dados: dict) -> bool:
+    """Atualiza os dados de um animal cadastrado no MySQL."""
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        query = """
+            UPDATE animais 
+            SET nome = %s, especie = %s, idade = %s, porte = %s, 
+                procedimento = %s, estado_clinico = %s
+            WHERE id = %s
+        """
+        cursor.execute(query, (
+            dados["nome"],
+            dados["especie"],
+            dados["idade"],
+            dados["porte"],
+            dados["procedimento"],
+            dados["estado_clinico"],
+            animal_id
+        ))
+        conn.commit()
+        return True
+    except Exception as err:
+        print(f"Erro ao atualizar animal no MySQL: {err}")
+        return False
+    finally:
+        if cursor:
+            cursor.close()
+        if conn and conn.is_connected():
+            conn.close()
+
+
 
 
 def salvar_historico_procedimento(
@@ -586,10 +606,6 @@ def salvar_historico_procedimento(
     finally:
         _fechar_conexao(conexao, cursor)
 
-
-# ============================================================================
-# HISTÓRICO PERMANENTE DE MEDICAÇÕES
-# ============================================================================
 
 
 def salvar_historico_medicacao(
@@ -679,10 +695,6 @@ def salvar_historico_medicacao(
         _fechar_conexao(conexao, cursor)
 
 
-# ============================================================================
-# CONSULTA DO HISTÓRICO COMPLETO DO ANIMAL
-# ============================================================================
-
 
 def carregar_historico_animal(animal_id: int) -> list[dict]:
     """Retorna procedimentos e medicações permanentes em uma única linha do tempo."""
@@ -761,9 +773,6 @@ def carregar_historico_animal(animal_id: int) -> list[dict]:
         _fechar_conexao(conexao, cursor)
 
 
-# ============================================================================
-# EXCLUSÃO DO HISTÓRICO
-# ============================================================================
 
 
 def deletar_historico_procedimento(procedimento_id: int) -> bool:
@@ -821,9 +830,6 @@ def deletar_historico_medicacao(medicacao_id: int) -> bool:
     finally:
         _fechar_conexao(conexao, cursor)
 
-# ============================================================================
-# EXCLUSÃO DE ANIMAIS E ALUNOS (EXCLUSIVO PARA DOCENTES)
-# ============================================================================
 
 
 def deletar_animal(animal_id: int) -> tuple[bool, str]:

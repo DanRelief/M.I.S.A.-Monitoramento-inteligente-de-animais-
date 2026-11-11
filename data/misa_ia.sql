@@ -1,11 +1,9 @@
 CREATE DATABASE IF NOT EXISTS misa;
 USE misa;
 
--- 1. Remove a regra restritiva atual
 ALTER TABLE sessoes_monitoramento 
 DROP FOREIGN KEY fk_sessao_animal;
 
--- 2. Recria a regra permitindo deleção em cascata
 ALTER TABLE sessoes_monitoramento 
 ADD CONSTRAINT fk_sessao_animal 
 FOREIGN KEY (animal_id) REFERENCES animais(id) 
@@ -13,7 +11,6 @@ ON DELETE CASCADE
 ON UPDATE CASCADE;
 
 
--- 1. Tabela de Usuários (com flag de primeiro acesso e identificador único)
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
@@ -24,7 +21,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Tabela de Animais (com relacionamento para o usuário responsável)
+
 CREATE TABLE IF NOT EXISTS animais (
     id INT AUTO_INCREMENT PRIMARY KEY, 
     nome VARCHAR(100) NOT NULL, 
@@ -38,7 +35,7 @@ CREATE TABLE IF NOT EXISTS animais (
     responsavel_aplicacao INT NOT NULL,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
-    -- Chave Estrangeira apontando para o aluno/docente responsável
+    
     CONSTRAINT fk_animais_responsavel 
         FOREIGN KEY (responsavel_aplicacao) 
         REFERENCES usuarios(id) 
@@ -49,7 +46,6 @@ CREATE TABLE IF NOT EXISTS animais (
 #ALTER TABLE animais 
 #ADD COLUMN observacao_docente TEXT DEFAULT NULL AFTER quantidade;
 
--- 3. Sessões de monitoramento
 CREATE TABLE IF NOT EXISTS sessoes_monitoramento (
     id VARCHAR(36) PRIMARY KEY,
 
@@ -80,7 +76,7 @@ CREATE TABLE IF NOT EXISTS sessoes_monitoramento (
         ON UPDATE CASCADE
 );
 
--- 4. Smedições dos sinais vitais dos animais
+
 CREATE TABLE IF NOT EXISTS medicoes_sinais_vitais (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
 
@@ -113,7 +109,8 @@ CREATE TABLE IF NOT EXISTS medicoes_sinais_vitais (
         data_hora
     )
 );
--- 5. Eventos e alertas de mudanças 
+
+
 CREATE TABLE IF NOT EXISTS eventos_alerta (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
 
@@ -162,7 +159,7 @@ CREATE TABLE IF NOT EXISTS eventos_alerta (
     )
 );
 
--- 1. Histórico Permanente de Procedimentos
+
 CREATE TABLE IF NOT EXISTS historico_procedimentos (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     animal_id INT NOT NULL,
@@ -182,14 +179,14 @@ CREATE TABLE IF NOT EXISTS historico_procedimentos (
     INDEX idx_proc_animal_data (animal_id, data_hora)
 );
 
--- 2. Histórico Permanente de Medicações Administradas
+
 CREATE TABLE IF NOT EXISTS historico_medicacoes (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     animal_id INT NOT NULL,
-    administrado_por INT NOT NULL, -- ID do aluno/docente que aplicou
+    administrado_por INT NOT NULL, 
     medicamento VARCHAR(100) NOT NULL,
     dose_quantidade VARCHAR(100) NOT NULL,
-    via_administracao VARCHAR(50) DEFAULT NULL, -- Ex: IV, IM, SC, Oral
+    via_administracao VARCHAR(50) DEFAULT NULL, 
     observacao TEXT DEFAULT NULL,
     data_hora DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

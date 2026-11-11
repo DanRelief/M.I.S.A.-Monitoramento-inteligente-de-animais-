@@ -2,6 +2,7 @@ from datetime import datetime
 from html import escape
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from ..infrastructure.database import atualizar_animal
 
 from PySide6.QtCore import (
     QCoreApplication,
@@ -80,6 +81,50 @@ class TelaInicial(QMainWindow):
         """Abre a janela de gerenciamento e exclusão de alunos para o docente."""
         dialog = DialogGerenciarAlunos(self)
         dialog.exec()
+
+
+    def editar_paciente(self) -> None:
+        if not self.paciente.get("id") or self.paciente.get("nome") == "---":
+            QMessageBox.warning(self, "Aviso", "Selecione um animal para editar.")
+            return
+
+        dialogo = EditarPacienteDialog(self.paciente, self)
+        if dialogo.exec() == QDialog.DialogCode.Accepted:
+            # Detecta se a classe usa 'obter_dados()' ou 'dados()'
+            if hasattr(dialogo, "obter_dados"):
+                novos_dados = dialogo.obter_dados()
+            elif hasattr(dialogo, "dados"):
+                novos_dados = dialogo.dados()
+            else:
+                QMessageBox.critical(self, "Erro", "Não foi possível extrair os dados da janela de edição.")
+                return
+
+            # Garante a extração limpa e fallback para os dados atuais caso o campo esteja vazio
+            dados_para_atualizar = {
+                "nome": str(novos_dados.get("nome", self.paciente["nome"])).strip(),
+                "especie": str(novos_dados.get("especie", self.paciente["especie"])).strip(),
+                "idade": int(novos_dados.get("idade", self.paciente["idade"])),
+                "porte": str(novos_dados.get("porte", self.paciente["porte"])).strip(),
+                "procedimento": str(novos_dados.get("procedimento", self.paciente["procedimento"])).strip(),
+                "estado_clinico": str(novos_dados.get("estado_clinico", self.paciente["estado_clinico"])).strip(),
+            }
+
+            # 1. Atualiza a tabela no banco MySQL
+            sucesso = atualizar_animal(int(self.paciente["id"]), dados_para_atualizar)
+
+            if sucesso:
+                # 2. Atualiza a memória local da interface
+                self.paciente.update(dados_para_atualizar)
+                
+                # Formatação visual padrão
+                self.paciente["porte"] = self.paciente["porte"].capitalize()
+                self.paciente["estado_clinico"] = self.paciente["estado_clinico"].capitalize()
+
+                # 3. Atualiza os textos na interface visual
+                self.atualizar_informacoes_paciente()
+                QMessageBox.information(self, "Sucesso", "Dados do paciente atualizados no banco de dados!")
+            else:
+                QMessageBox.critical(self, "Erro", "Falha ao salvar as alterações no banco de dados.")
 
     def __init__(self, usuario: dict[str, str]) -> None:
         super().__init__()
@@ -1939,15 +1984,6 @@ class TelaInicial(QMainWindow):
         self.atualizar_card_historico()
         return card
 
-    def editar_paciente(self) -> None:
-        if self.paciente["nome"] == "---":
-            QMessageBox.warning(self, "Aviso", "Selecione um animal antes de editar.")
-            return
-
-        self.popup_editar_paciente = EditarPacienteDialog(self.paciente, self)
-        if self.popup_editar_paciente.exec() == QDialog.DialogCode.Accepted:
-            self.paciente.update(self.popup_editar_paciente.dados())
-            self.atualizar_informacoes_paciente()
 
     def cadastrar_procedimento(self) -> None:
         if self.paciente.get("nome") == "---" or not self.paciente.get("id"):
